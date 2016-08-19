@@ -49,8 +49,15 @@ android {
     }
 }
 
+repositories {
+    maven {
+        url "http://github.com/wada811/Android-Material-Design-Colors/raw/master/repository/"
+    }
+}
+
 dependencies {
     compile 'com.android.support:support-annotations:23.0.0'
     compile 'com.anjlab.android.iab.v3:library:1.0.26@aar'
-    compile 'com.github.chester1000:colorpicker:a61fcca635'
+    compile 'com.thebluealliance:spectrum:0.6.0'
+    compile 'com.wada811:android-material-design-colors:3.0.0'
 }

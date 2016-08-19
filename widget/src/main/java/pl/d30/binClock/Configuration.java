@@ -2,6 +2,7 @@ package pl.d30.binClock;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -17,7 +18,7 @@ import android.widget.Toast;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.PurchaseInfo;
 import com.anjlab.android.iab.v3.TransactionDetails;
-import com.flask.colorpicker.ColorPickerPreference;
+import com.thebluealliance.spectrum.SpectrumPreference;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
@@ -155,7 +156,8 @@ public class Configuration extends PreferenceActivity implements BillingProcesso
 
     public static class BinaryWidgetSettings extends PreferenceFragment {
 
-        private ColorPickerPreference dotColor;
+        private SpectrumPreference dotColor;
+        private boolean isUserAction;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -188,11 +190,8 @@ public class Configuration extends PreferenceActivity implements BillingProcesso
                         break;
                 }
 
-                if (dotColor != null) {
-                    int dot = getPreferenceManager().getSharedPreferences().getInt(Widget.SP_KEY_DOT_COLOR, -1);
-                    if (dot == -1)
-                        dotColor.setValue(setBlack ? 0xff000000 : 0xffffffff, true);
-                }
+                if (dotColor != null && !isUserAction)
+                    dotColor.setColor(setBlack ? Color.BLACK : Color.WHITE);
 
                 return true;
                 }
@@ -205,8 +204,15 @@ public class Configuration extends PreferenceActivity implements BillingProcesso
             Preference premium = findPreference(PREMIUM);
             getPreferenceScreen().removePreference(premium);
 
-            dotColor = (ColorPickerPreference) findPreference(Widget.SP_KEY_DOT_COLOR);
+            dotColor = (SpectrumPreference) findPreference(Widget.SP_KEY_DOT_COLOR);
             dotColor.setEnabled(true);
+            dotColor.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    isUserAction = true;
+                    return false;
+                }
+            });
 
             Preference compact = findPreference(Widget.SP_KEY_TYPE);
             compact.setEnabled(true);
